@@ -1,0 +1,11 @@
+doc/
+sample/
+test/
+coverage/
+.travis.yml
+.node-version
+.eslintrc
+.idea
+.gitignore
+jsdoc.conf
+Makefile

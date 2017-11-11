@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>node-leaderboard sample.</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <script>
+        function updatePage(page) {
+            document.location = "?page=" + page;
+        }
+
+        function reloadPage() {
+            document.location.reload();
+        }
+
+        jQuery(function($) {
+            $('#clear').click(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: '/clear',
+                    type: 'POST',
+                    success: function(/*result, textStatus, xhr*/) {
+                        updatePage(1);
+                    }
+                });
+            });
+
+            $('#insert').submit(function (e) {
+                e.preventDefault();
+
+                const _form = $(this);
+                $.ajax({
+                    url: '/insert',
+                    type: 'POST',
+                    data: _form.serialize(),
+
+                    success: function(/*result, textStatus, xhr*/) {
+                        reloadPage();
+                    }
+                });
+            });
+
+            $('.modifyScore').click(function (e) {
+                e.preventDefault();
+
+                const _link = $(this);
+                $.ajax({
+                    url: '/modify',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        name: _link.attr("name"),
+                        delta: _link.attr("delta")
+                    }),
+                    success: function () {
+                        reloadPage();
+                    },
+                    error: function (xhr, /*textStatus, errorThrown*/) {
+                        alert("error: " + xhr.status);
+                    }
+                });
+            });
+
+            $('.remove').click(function (e) {
+                e.preventDefault();
+
+                const _link = $(this);
+                $.ajax({
+                    url: '/remove',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        name: _link.attr("name")
+                    }),
+                    success: function () {
+                        reloadPage();
+                    },
+                    error: function (xhr, /*textStatus, errorThrown*/) {
+                        alert("error: " + xhr.status);
+                    }
+                });
+            });
+
+            $('.paging').click(function (e) {
+                e.preventDefault();
+
+                const delta = +($(this).attr("paging"));
+                updatePage(<%=page%> + delta);
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <h2>node-leaderboard sample.</h2>
+
+            <div class="row" style="text-align: right">
+                <form id="insert">
+                    <input type="text" name="num">
+                    <button type="submit" class="btn btn-sm btn-primary">register users with random score.</button>
+                </form>
+            </div>
+
+            <div class="row">
+                total registered: <%= total %><br>
+                <% if (page > 1) { %>
+                    <a class="paging" href="javascript:void(0);" paging="-1"> << prev </a>
+                <% } else { %>
+                    << prev
+                <% } %>
+                <%= page %> / <%= maxPage %>
+                <% if (page < maxPage) { %>
+                    <a class="paging"  href="javascript:void(0);" paging="1"> next >> </a>
+                <% } else { %>
+                    next >>
+                <% } %>
+            </div>
+
+            <div style="padding:12px 12px 0px 0px;">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>rank</th>
+                        <th>name</th>
+                        <th>score</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <% list.forEach((data) => { %>
+                    <tr>
+                        <td><%=data.rank%></td>
+                        <td><%=data.name%></td>
+                        <td><%=data.score%></td>
+                        <td>
+                            <a class="btn btn-primary btn-xs modifyScore" name="<%=data.name%>" delta="1" href="javascript:void(0);">++</a>
+                            <a class="btn btn-primary btn-xs modifyScore" name="<%=data.name%>" delta="-1" href="javascript:void(0);">--</a>
+                            <a class="btn btn-warning btn-xs remove" name="<%=data.name%>" href="javascript:void(0);">remove</a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </table>
+            </div>
+
+            <div align="right">
+                <form id="clear">
+                    <button type="button" class="btn btn-sm btn-danger">clear all.</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

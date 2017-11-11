@@ -1,0 +1,39 @@
+{
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hirowaki/node-leaderboard.git"
+  },
+  "name": "node-leaderboard",
+  "version": "1.1.0",
+  "description": "simple leaderboard using redis.",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
+    "lint": "eslint index.js lib/ test/ sample/",
+    "jsdoc": "jsdoc -c ./jsdoc.conf -t ./node_modules/ink-docstrap/template -R README.md",
+    "deploy": "npm run jsdoc && gh-pages -d doc"
+  },
+  "author": "hirowaki https://github.com/hirowaki",
+  "dependencies": {
+    "lodash": "^4.0.0",
+    "bluebird": "*",
+    "redis": "~2.7.1",
+    "lured": "*"
+  },
+  "devDependencies": {
+    "mocha": "1.18.x",
+    "sinon": "*",
+    "eslint": "*",
+    "istanbul": "*",
+    "jsdoc": "*",
+    "ink-docstrap": "*",
+    "gh-pages": "*",
+    "express": "~4.15.3",
+    "ejs": "~2.5.6",
+    "body-parser": "~1.17.2"
+  },
+  "keywords": [
+    "leaderboard"
+  ]
+}
